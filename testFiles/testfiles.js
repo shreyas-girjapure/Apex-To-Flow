@@ -1,81 +1,48 @@
+import { BufferedTokenStream, CommonToken, ParserRuleContext  } from "antlr4ts";
 import {
-    ApexLexer,
-    CommonTokenStream,
-    ApexParser,
-    CaseInsensitiveInputStream,
-  } from "apex-parser";
-  
-  class DeclarationTypeListener {
-    createdNames = new Set();
-    ignoredTypes = new Set(["map", "set", "list"]);
-  
-    constructor() {}
-  
-    enterCreatedName(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterFormalParameterList(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterTypeList(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterTypeRef(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterTypeName(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterLocalVariableDeclarationStatement(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterEnhancedForControl(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterFromNameList(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    enterEnhancedForControl(ctx) {
-      this.handleSObjects(ctx);
-    }
-  
-    handleSObjects(ctx) {
-      console.log("mew");
-      const name = ctx.start.text.toLowerCase();
-      if (!this.ignoredTypes.has(name)) {
-        this.createdNames.add(name);
-      }
-    }
+  ApexLexer,  
+  CommonTokenStream,
+  ApexParser,
+  CaseInsensitiveInputStream,
+  MethodDeclarationContext
+} from "apex-parser";
+
+class TestListener {
+  constructor() { }
+
+  // enterEveryRule(ctx) {        
+  //   const ruleIndex = ctx.ruleIndex;
+  //   const ruleName = parser.ruleNames[ruleIndex];
+  //   const textValue = ctx.start.text;
+  //   console.log(`${ruleName} >>>> ${textValue}`);
+  // }  
+  // exitEveryRule(ctx) {        
+  //   const ruleIndex = ctx.ruleIndex;
+  //   const ruleName = parser.ruleNames[ruleIndex];
+  //   const textValue = ctx.start.text;
+  //   console.log(`exit ${ruleName} >>>> ${textValue}`);
+  // }  
+
+  enterMethodDeclaration(ctx) {
+    let text = ctx.start.text;
   }
-  
-  let classBody =
-    "public class Hello  { public static String name = 'test';public static string sayHello(){ return 'helloWorldl';}}";
+
+  exitMethodDeclaration(ctx) {
+    let startIndex = ctx.start.startIndex;
+    console.log('the start ind ',startIndex);
+    let stopIndex = ctx.stop.stopIndex;
+    console.log('the stop ind ',stopIndex);  
+  }
+}
+
+let classBody =
+  "public class Hello  { public static String sayHello(String x){ return 'helloWorldl';}}";
+
   const lexer = new ApexLexer(new CaseInsensitiveInputStream({}, classBody));
-  const tokens = new CommonTokenStream(lexer);
-  const parser = new ApexParser(tokens);
-  
-  lexer.removeErrorListeners();
-  parser.removeErrorListeners();
-  
-  tokens.fill();
-  
-  let tokenMap = parser.getTokenTypeMap();
-  
-  for (const [key, value] of tokenMap.entries()) {
-    console.log("the key " + key + " val " + value);
-  }
-  
-  for (const token of tokens.getTokens()) {
-    console.log(`${token.text} and ${token.type} `);
-  }
-  
-  console.log(parser.typeDeclaration().children[0]);
-  
+const tokens = new CommonTokenStream(lexer);
+const parser = new ApexParser(tokens);
+
+lexer.removeErrorListeners();
+parser.removeErrorListeners();
+parser.addParseListener(new TestListener());
+let tree = parser.compilationUnit();
