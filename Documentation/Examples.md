@@ -1,6 +1,6 @@
 ## Examples
 
-### Simple Function
+### Simple Functions
 
 Input :
 
@@ -15,11 +15,11 @@ Output :
 
 Autolaunch flow metadata with
 
-1. Flow name same as methodName
-1. firstName as `Available for input` variable.
-1. lastName as `Available for input` variable.
-1. Assignment node for resultString.
-1. resultString as `Available for output` variable.
+1. Flow name same as methodName `sayHello`
+1. `firstName` as `Available for input` variable.
+1. `lastName` as `Available for input` variable.
+1. Assignment node for `resultString`.
+1. `resultString` as `Available for output` variable.
 
 ### Retrieve and Conditions
 
@@ -39,11 +39,11 @@ Output :
 Autolaunch flow metadata with
 
 1. Flow name same as methodName
-1. accountIds as `Available for input` variable.
-1. accList new variable.
-1. Decision node for checking if accList isEmpty().
+1. `accountIds` as `Available for input` variable.
+1. `accList` new variable.
+1. `Decision` node for checking if `accList isEmpty()`.
 1. Get element for making query with provided fields.
-1. accList variable `Available for output`.
+1. `accList` variable `Available for output`.
 
 ### DMLs and Loops
 
