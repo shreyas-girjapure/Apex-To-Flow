@@ -1,6 +1,7 @@
 # All Flow Entities
 
 ## Resources
+
 #### Variable
 1. Text
 1. Record
@@ -12,12 +13,14 @@
 1. Picklist
 1. Multi-Select picklist
 1. Apex Defined
+
 #### Constant
 1. Text
 1. Number
 1. Currency
 1. Boolean
-1. Date
+1. Date 
+
 #### Formula
 1. Text
 1. Number
@@ -26,6 +29,7 @@
 1. Date
 1. Date/Time
 1. Formula
+
 #### Text Template
 #### Stage
 
@@ -51,4 +55,4 @@
 1. Create Records
 1. Update Records
 1. Get Records
-1. Delete Records
+1. Delete Records 
