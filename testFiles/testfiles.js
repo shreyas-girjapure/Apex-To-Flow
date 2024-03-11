@@ -6,7 +6,7 @@ import {
   ParseTreeWalker
 } from "apex-parser";
 
-class VariableDeclarationListenerTestAnother {
+class VariableDeclarationListener {
 
   enterFormalParameter(ctx) {
     const typeRef = ctx.typeRef();
@@ -14,14 +14,27 @@ class VariableDeclarationListenerTestAnother {
     const varType = this.getTypeAsString(typeRef);
     console.log('Variable Name: ' + varName + ', Variable Type: ' + varType);
   }
+  enterLocalVariableDeclaration(ctx) {
+    const typeRef = ctx.typeRef();
+    const variableDeclaratorsContext = ctx.variableDeclarators();
+    this.handleVariableDeclarators(typeRef, variableDeclaratorsContext);
+  }
+
+  handleVariableDeclarators(typeRef, variableDeclaratorsContext) {
+    if (variableDeclaratorsContext) {
+      variableDeclaratorsContext.variableDeclarator().forEach(variableDeclarator => {
+        const varName = variableDeclarator.id().text;
+        const varType = this.getTypeAsString(typeRef);
+        console.log('Variable Name: ' + varName + ', Variable Type: ' + varType);
+      });
+    }
+  }
   getTypeAsString(typeRef) {
     const typeNames = typeRef.typeName();
-  
     if (typeNames && typeNames.length > 0) {
       const typeStrings = typeNames.map(typeName => this.getTypeName(typeName));
       return typeStrings.join('|');
     }
-  
     return "";
   }
 
@@ -40,7 +53,6 @@ class VariableDeclarationListenerTestAnother {
         return baseType;
       }
     }
-
     return "";
   }
 
@@ -64,6 +76,11 @@ class VariableDeclarationListenerTestAnother {
 let classBody = `public class Hello  { 
   public static String sayHello(List<Account> accList , String xInput,List<String> someLst , List<List<String>> deepStrings){
     String xLocal = '1';
+    List<Contact> someContacts = new List<Contacts>();
+    againSomeMethod(xLocal);    
+  }
+  public static void againSomeMethod(String yInput){
+
   }
 }`;
 const lexer = new ApexLexer(new CaseInsensitiveInputStream({}, classBody));
@@ -74,4 +91,4 @@ const parser = new ApexParser(tokens)
 parser.removeErrorListeners()
 
 const cu = parser.compilationUnit()
-ParseTreeWalker.DEFAULT.walk(new VariableDeclarationListenerTestAnother(), cu)
+ParseTreeWalker.DEFAULT.walk(new VariableDeclarationListener(), cu)
