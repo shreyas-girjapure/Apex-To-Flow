@@ -7,13 +7,19 @@ import {
 } from "apex-parser";
 
 class VariableDeclarationListener {
+  variablesAndType = [];
 
   enterFormalParameter(ctx) {
     const typeRef = ctx.typeRef();
     const varName = ctx.id().text;
     const varType = this.getTypeAsString(typeRef);
-    console.log('Variable Name: ' + varName + ', Variable Type: ' + varType);
+    this.variablesAndType.push({
+      isInputVariable: true,
+      dataType: varType,
+      variableName: varName,
+    })
   }
+
   enterLocalVariableDeclaration(ctx) {
     const typeRef = ctx.typeRef();
     const variableDeclaratorsContext = ctx.variableDeclarators();
@@ -25,10 +31,15 @@ class VariableDeclarationListener {
       variableDeclaratorsContext.variableDeclarator().forEach(variableDeclarator => {
         const varName = variableDeclarator.id().text;
         const varType = this.getTypeAsString(typeRef);
-        console.log('Variable Name: ' + varName + ', Variable Type: ' + varType);
+        this.variablesAndType.push({
+          isInputVariable: false,
+          dataType: varType,
+          variableName: varName,
+        })
       });
     }
   }
+
   getTypeAsString(typeRef) {
     const typeNames = typeRef.typeName();
     if (typeNames && typeNames.length > 0) {
@@ -37,7 +48,6 @@ class VariableDeclarationListener {
     }
     return "";
   }
-
 
   getTypeName(typeNameContext) {
     if (typeNameContext) {
@@ -56,7 +66,6 @@ class VariableDeclarationListener {
     return "";
   }
 
-
   getTypeArguments(typeArgumentsContext) {
     if (typeArgumentsContext) {
       const typeList = typeArgumentsContext.typeList();
@@ -71,17 +80,14 @@ class VariableDeclarationListener {
     }
     return "";
   }
+
 }
 
-let classBody = `public class Hello  {
-  public static String sayHello(List<Account> accList , String xInput,List<String> someLst , List<List<String>> deepStrings){
+let classBody = `public class Hello {
+  public static String sayHello(List<Account> accList,String xInput,List<String> someLst){
     String xLocal = '1';
     List<Contact> someContacts = new List<Contacts>();
     List<Account> accListNew = [Select id from account];
-    againSomeMethod(xLocal);    
-  }
-  public static void againSomeMethod(String yInput){
-    
   }
 }`;
 
@@ -90,7 +96,10 @@ const tokens = new CommonTokenStream(lexer);
 
 const parser = new ApexParser(tokens)
 
-parser.removeErrorListeners()
+parser.removeErrorListeners();
 
-const cu = parser.compilationUnit()
-ParseTreeWalker.DEFAULT.walk(new VariableDeclarationListener(), cu)
+const cu = parser.compilationUnit();
+const declarationInstance = new VariableDeclarationListener();
+ParseTreeWalker.DEFAULT.walk(declarationInstance, cu);
+
+console.log(declarationInstance.variablesAndType);
