@@ -73,16 +73,18 @@ class VariableDeclarationListener {
   }
 }
 
-let classBody = `public class Hello  { 
+let classBody = `public class Hello  {
   public static String sayHello(List<Account> accList , String xInput,List<String> someLst , List<List<String>> deepStrings){
     String xLocal = '1';
     List<Contact> someContacts = new List<Contacts>();
+    List<Account> accListNew = [Select id from account];
     againSomeMethod(xLocal);    
   }
   public static void againSomeMethod(String yInput){
-
+    
   }
 }`;
+
 const lexer = new ApexLexer(new CaseInsensitiveInputStream({}, classBody));
 const tokens = new CommonTokenStream(lexer);
 
